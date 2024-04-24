@@ -42,12 +42,12 @@ resource "aws_route_table" "public_rt" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.some_ig.id
+    gateway_id = aws_internet_gateway.my_ig.id
   }
 
   route {
     ipv6_cidr_block = "::/0"
-    gateway_id      = aws_internet_gateway.some_ig.id
+    gateway_id      = aws_internet_gateway.my_ig.id
   }
 
   tags = {
@@ -145,7 +145,7 @@ resource "aws_s3_bucket" "s3buckit" {
 
 resource "aws_instance" "ec2_instance_msr" {
     ami = var.ami_id
-    subnet_id = aws_subnet.some_public_subnet.id
+    subnet_id = aws_subnet.my_public_subnet.id
     instance_type = var.instance_type
     key_name = var.ami_key_pair_name
     associate_public_ip_address = true
@@ -177,7 +177,7 @@ resource "aws_instance" "ec2_instance_msr" {
 resource "aws_instance" "ec2_instance_wrk" {
     ami = var.ami_id
     count = var.number_of_worker
-    subnet_id = aws_subnet.some_public_subnet.id
+    subnet_id = aws_subnet.my_public_subnet.id
     instance_type = var.instance_type
     key_name = var.ami_key_pair_name
     associate_public_ip_address = true
