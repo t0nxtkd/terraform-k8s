@@ -13,15 +13,10 @@ resource "aws_vpc" "my_custom_vpc" {
   }
 }
 
-resource "random_shuffle" "az" {
-  input        = ["${var.region}a", "${var.region}b", "${var.region}c", "${var.region}d", "${var.region}e"]
-  result_count = 1
-}
-
 resource "aws_subnet" "my_public_subnet" {
-  vpc_id            = aws_vpc.some_custom_vpc.id
+  vpc_id            = aws_vpc.my_custom_vpc.id
   cidr_block        = "10.0.1.0/24"
-  availability_zone = random_shuffle.az.result[0]
+  availability_zone = "eu-central-1a"
 
   tags = {
     Name = "K8S Subnet"
@@ -29,7 +24,7 @@ resource "aws_subnet" "my_public_subnet" {
 }
 
 resource "aws_internet_gateway" "my_ig" {
-  vpc_id = aws_vpc.some_custom_vpc.id
+  vpc_id = aws_vpc.my_custom_vpc.id
 
   tags = {
     Name = "K8S Internet Gateway"
@@ -37,7 +32,7 @@ resource "aws_internet_gateway" "my_ig" {
 }
 
 resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.some_custom_vpc.id
+  vpc_id = aws_vpc.my_custom_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
