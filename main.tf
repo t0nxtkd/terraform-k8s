@@ -158,7 +158,7 @@ resource "aws_instance" "ec2_instance_msr" {
     tags = {
         Name = "k8s_msr_1"
     }
-    user_data_base64 = base64encode("${templatefile("scripts/install_k8s_msr.sh", {
+    user_data_base64 = base64encode("${templatefile("install_k8s_control-plane.sh", {
 
     access_key = var.access_key
     private_key = var.secret_key
@@ -174,7 +174,7 @@ resource "aws_instance" "ec2_instance_msr" {
     
 } 
 
-resource "aws_instance" "ec2_instance_wrk" {
+resource "aws_instance" "ec2_instance_worker-node" {
     ami = var.ami_id
     count = var.number_of_worker
     subnet_id = aws_subnet.my_public_subnet.id
@@ -188,9 +188,9 @@ resource "aws_instance" "ec2_instance_wrk" {
     delete_on_termination = true
     }
     tags = {
-        Name = "k8s_wrk_${count.index + 1}"
+        Name = "k8s_worker-node_${count.index + 1}"
     }
-    user_data_base64 = base64encode("${templatefile("scripts/install_k8s_wrk.sh", {
+    user_data_base64 = base64encode("${templatefile("install_k8s_worker-node.sh", {
 
     access_key = var.access_key
     private_key = var.secret_key
@@ -203,6 +203,6 @@ resource "aws_instance" "ec2_instance_wrk" {
     depends_on = [
       aws_s3_bucket.s3buckit,
       random_string.s3name,
-      aws_instance.ec2_instance_msr
+      aws_instance.ec2_instance_control-plane
   ]
 } 
